@@ -1,0 +1,43 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Sinyue · Debug (clang)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-clang-debug/Sinyue.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "symbolSearchPath": "${workspaceFolder}/build-clang-debug",
+      "stopAtEntry": false,
+      "environment": [],
+      "preLaunchTask": "build: clang-debug"
+    },
+    {
+      "name": "Sinyue · Release (clang)",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-clang-release/Sinyue.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "symbolSearchPath": "${workspaceFolder}/build-clang-release",
+      "stopAtEntry": false,
+      "environment": [],
+      "preLaunchTask": "build: clang-release"
+    },
+    {
+      "name": "Sinyue · Debug (LLDB)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build-clang-debug/Sinyue.exe",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "MIMode": "lldb",
+      "miDebuggerPath": "${env:ProgramFiles}/LLVM/bin/lldb.exe",
+      "externalConsole": false,
+      "preLaunchTask": "build: clang-debug"
+    }
+  ]
+}

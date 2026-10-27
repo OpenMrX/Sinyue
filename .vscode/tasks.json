@@ -1,0 +1,60 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "configure: clang-debug",
+      "detail": "cmake --preset clang-debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--preset", "clang-debug"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "configure: clang-release",
+      "detail": "cmake --preset clang-release",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--preset", "clang-release"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "build: clang-debug",
+      "detail": "cmake --build --preset clang-debug",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "--preset", "clang-debug"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "build: clang-release",
+      "detail": "cmake --build --preset clang-release",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["--build", "--preset", "clang-release"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "group": "build",
+      "problemMatcher": ["$gcc"]
+    },
+    {
+      "label": "clean: build dirs",
+      "detail": "Remove build-clang-debug and build-clang-release",
+      "type": "shell",
+      "command": "cmake",
+      "args": ["-E", "rm", "-rf", "build-clang-debug", "build-clang-release"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    },
+    {
+      "label": "sccache: show stats",
+      "type": "shell",
+      "command": "sccache",
+      "args": ["--show-stats"],
+      "options": { "cwd": "${workspaceFolder}" },
+      "problemMatcher": []
+    }
+  ]
+}

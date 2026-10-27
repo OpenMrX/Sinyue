@@ -1,0 +1,19 @@
+{
+  "version": 4,
+  "configurations": [
+    {
+      "name": "clang-debug",
+      "compileCommands": "${workspaceFolder}/compile_commands.json",
+      "cppStandard": "c++20",
+      "cStandard": "c17",
+      "intelliSenseMode": "windows-clang-x64"
+    },
+    {
+      "name": "clang-release",
+      "compileCommands": "${workspaceFolder}/build-clang-release/compile_commands.json",
+      "cppStandard": "c++20",
+      "cStandard": "c17",
+      "intelliSenseMode": "windows-clang-x64"
+    }
+  ]
+}

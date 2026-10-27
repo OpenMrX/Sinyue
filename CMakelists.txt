@@ -1,0 +1,101 @@
+# =============================================================================
+#  Sinyue - root build script
+#
+#  Toolchain : Clang + Ninja          (see CMakePresets.json)
+#  Packages  : CPM                    (vendored in cmake/CPM.cmake)
+#             -> sources cached in ./.cpmcache
+#  Helper    : abcmake                (https://github.com/an-dr/abcmake)
+#             -> follows the official layout: add_main_component() in the root,
+#                add_component() inside every components/<name>/ folder.
+#  Accel     : sccache compiler launcher (cmake/Sccache.cmake)
+# =============================================================================
+cmake_minimum_required(VERSION 3.25)
+
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+# CPM cache location + hit/miss reporting. Must run before include(CPM).
+include(CPMCache)
+# sccache/ccache launcher. Must run before project() to affect feature tests.
+include(Sccache)
+
+project(Sinyue
+  VERSION     0.1.0
+  DESCRIPTION "Sinyue"
+  LANGUAGES   C CXX)
+
+# ---------------------------------------------------------------------------
+# Global settings
+# ---------------------------------------------------------------------------
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type" FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+               Debug Release RelWithDebInfo MinSizeRel)
+endif()
+
+# ---------------------------------------------------------------------------
+# abcmake, fetched with CPM into ${CPM_SOURCE_CACHE}/abcmake
+#
+# The checkout is shared by every build directory, so build-clang-release
+# reuses what build-clang-debug already downloaded.
+#
+# CMAKE_PREFIX_PATH makes the official `find_package(abcmake REQUIRED)` work
+# from the root and from every components/<name>/CMakeLists.txt, and
+# CMAKE_MODULE_PATH makes the official `include(ab.cmake)` form work too.
+# ---------------------------------------------------------------------------
+include(CPM)
+
+cpm_cache_has(abcmake _sinyue_abcmake_cached)
+
+CPMAddPackage(
+  NAME              abcmake
+  GITHUB_REPOSITORY an-dr/abcmake
+  GIT_TAG           v6.4.0
+  DOWNLOAD_ONLY     YES)
+
+if(NOT abcmake_ADDED)
+  message(FATAL_ERROR
+    "abcmake could not be resolved. Check the network connection, or place a "
+    "checkout at ${CPM_SOURCE_CACHE}/abcmake.")
+endif()
+
+list(APPEND CMAKE_PREFIX_PATH "${abcmake_SOURCE_DIR}/src")
+list(APPEND CMAKE_MODULE_PATH "${abcmake_SOURCE_DIR}/src")
+
+find_package(abcmake REQUIRED)
+
+# ---------------------------------------------------------------------------
+# Warning set shared by every target
+# ---------------------------------------------------------------------------
+add_library(sinyue_warnings INTERFACE)
+target_compile_options(sinyue_warnings INTERFACE
+  $<$<CXX_COMPILER_ID:Clang,AppleClang,GNU>:-Wall;-Wextra;-Wpedantic;-Wshadow>
+  $<$<CXX_COMPILER_ID:MSVC>:/W4;/permissive->)
+
+# ---------------------------------------------------------------------------
+# Main component - abcmake globs src/ and auto-discovers + links
+# every folder under components/
+# ---------------------------------------------------------------------------
+add_main_component(${PROJECT_NAME})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE sinyue_warnings)
+
+# Link-time optimisation for optimised builds only.
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+  include(CheckIPOSupported)
+  check_ipo_supported(RESULT _sinyue_ipo_ok OUTPUT _sinyue_ipo_msg LANGUAGES CXX)
+  if(_sinyue_ipo_ok)
+    set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+    message(STATUS "[lto] enabled for ${PROJECT_NAME}")
+  else()
+    message(STATUS "[lto] unavailable: ${_sinyue_ipo_msg}")
+  endif()
+endif()
+
+message(STATUS "[build] ${PROJECT_NAME} ${PROJECT_VERSION} "
+               "${CMAKE_BUILD_TYPE} / ${CMAKE_CXX_COMPILER_ID} "
+               "${CMAKE_CXX_COMPILER_VERSION}")

@@ -1,0 +1,38 @@
+{
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": true,
+  "cmake.configureOnEdit": false,
+  "cmake.exportCompileCommandsFile": true,
+  "cmake.copyCompileCommands": "${workspaceFolder}/compile_commands.json",
+  "cmake.buildBeforeRun": true,
+  "cmake.options.statusBarVisibility": "visible",
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+  "C_Cpp.default.cppStandard": "c++20",
+  "C_Cpp.default.cStandard": "c17",
+  "C_Cpp.default.intelliSenseMode": "windows-clang-x64",
+  "C_Cpp.intelliSenseEngine": "default",
+  "files.associations": {
+    "*.cmake": "cmake",
+    "CMakeLists.txt": "cmake",
+    "*.cmake.in": "cmake"
+  },
+  "files.watcherExclude": {
+    "**/build-clang-*/**": true,
+    "**/.cpmcache/**": true,
+    "**/vcpkg/**": true
+  },
+  "search.exclude": {
+    "**/build-clang-*": true,
+    "**/.cpmcache": true,
+    "**/vcpkg": true,
+    "**/compile_commands.json": true
+  },
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.eol": "\n",
+  "editor.formatOnSave": false,
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.env.windows": {
+    "PATH": "${env:ProgramFiles}\\LLVM\\bin;${env:PATH}"
+  }
+}
