@@ -18,7 +18,7 @@
 .EXAMPLE
     ./scripts/build.ps1
     ./scripts/build.ps1 -Config release -Run
-    ./scripts/build.ps1 -Reconfigure -Target greeting
+    ./scripts/build.ps1 -Reconfigure -Target Core
 #>
 [CmdletBinding()]
 param(

@@ -6,7 +6,7 @@
 #             -> sources cached in ./.cpmcache
 #  Helper    : abcmake                (https://github.com/an-dr/abcmake)
 #             -> follows the official layout: add_main_component() in the root,
-#                add_component() inside every components/<name>/ folder.
+#                add_component() inside every Components/<name>/ folder.
 #  Accel     : sccache compiler launcher (cmake/Sccache.cmake)
 # =============================================================================
 cmake_minimum_required(VERSION 3.25)
@@ -44,7 +44,7 @@ endif()
 # reuses what build-clang-debug already downloaded.
 #
 # CMAKE_PREFIX_PATH makes the official `find_package(abcmake REQUIRED)` work
-# from the root and from every components/<name>/CMakeLists.txt, and
+# from the root and from every Components/<name>/CMakeLists.txt, and
 # CMAKE_MODULE_PATH makes the official `include(ab.cmake)` form work too.
 # ---------------------------------------------------------------------------
 include(CPM)
@@ -77,10 +77,17 @@ target_compile_options(sinyue_warnings INTERFACE
   $<$<CXX_COMPILER_ID:MSVC>:/W4;/permissive->)
 
 # ---------------------------------------------------------------------------
-# Main component - abcmake globs src/ and auto-discovers + links
-# every folder under components/
+# Component root: abcmake reads the directory name from the global
+# ABCMAKE_COMPONENTS_DIR property (default "components"). We point it at
+# src/Components so auto-discovery scans src/Components/* instead.
 # ---------------------------------------------------------------------------
-add_main_component(${PROJECT_NAME})
+set_property(GLOBAL PROPERTY ABCMAKE_COMPONENTS_DIR "src/Components")
+
+# ---------------------------------------------------------------------------
+# Main component - abcmake globs src/App and auto-discovers + links
+# every folder under src/Components/
+# ---------------------------------------------------------------------------
+add_main_component(${PROJECT_NAME} SOURCE_DIR src/App)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE sinyue_warnings)
 

@@ -1,0 +1,32 @@
+---
+# clangd LSP 配置（Sinyue）
+# 让 clangd 找到 CMake preset 生成的编译数据库，并给出合理的解析兜底参数。
+# 编辑器（VS Code / CLion / Neovim）装了 clangd 插件即自动读取本文件。
+
+CompileFlags:
+  # 指向 CMake preset 生成的编译数据库目录（与 scripts/build.ps1 的 -Config 对应）。
+  # 默认用 debug；若改用 release preset，把路径改成 build-clang-release。
+  # 需先执行过一次 cmake --preset clang-debug（scripts/bootstrap.ps1 已会预热）。
+  CompilationDatabase: build-clang-debug
+
+  Add:
+    # 兜底参数：即使某个文件尚未进入编译数据库，也能正确解析 C++ 与 MS 扩展。
+    - --std=c++26
+    - -fms-extensions
+    # Windows 上若 clangd 找不到编译器的内建头，取消下一行注释并指向你的 clang：
+    # - --query-driver=C:/Program Files/LLVM/bin/clang++.exe
+
+  Remove:
+    - -Werror
+    - -WX
+
+Diagnostics:
+  UnusedIncludes: None     # 项目较小，关掉以减少误报
+  ClangTidy:
+    Add: []
+
+InlayHints:
+  Enabled: true            # 显示类型推导 / 参数名等内联提示
+
+Hover:
+  ShowAKA: true

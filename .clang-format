@@ -1,0 +1,51 @@
+---
+# Sinyue C++ 代码风格（clang-format）
+# 基线 LLVM，针对本仓库微调：
+#   - 4 空格缩进
+#   - 指针/引用左贴类型（const char* / int&）
+#   - Attached 花括号（函数体 { 同行）
+#   - 短函数可单行（const char* appName() { return "..."; }）
+#   - 命名空间不额外缩进，保留结尾 // namespace X 注释
+#   - 保留 trailing-return-type（auto main() -> int）
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++20
+
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+PointerAlignment: Left
+ReferenceAlignment: Left
+BreakBeforeBraces: Attach
+AccessModifierOffset: -4
+
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: true
+
+NamespaceIndentation: None
+FixNamespaceComments: true
+NamespaceMacros: ['GTEST_TEST', 'TEST', 'TEST_F']
+
+AlwaysBreakAfterReturnType: None
+ColumnLimit: 100
+
+SortIncludes: true
+IncludeBlocks: Preserve
+IncludeCategories:
+  - Regex: '^<[a-z_]+>'            # C 系统头
+    Priority: 1
+  - Regex: '^<[^"]+'              # C++ 标准/库头
+    Priority: 2
+  - Regex: '^"'                   # 本仓库本地头
+    Priority: 3
+
+QualifierAlignment: Leave
+BinPackArguments: false
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOnNextLine: true
+ReflowComments: true
+CommentPragmas: '^ IWYU pragma:'

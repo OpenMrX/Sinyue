@@ -34,12 +34,14 @@ cmake --build --preset clang-debug
 ## 目录结构
 
 ```
-CMakeLists.txt              主组件（add_main_component）
+CMakeLists.txt              主组件（add_main_component，SOURCE_DIR=src/App）
 CMakePresets.json           clang-debug / clang-release 预设
 cmake/                      CPM.cmake、CPMCache.cmake、Sccache.cmake
-components/                 库组件（每个目录一份 add_component）
-  greeting/                 示例组件：greeting::hello()
-src/                        应用入口 main.cpp
+src/
+  App/                      应用入口 AppMain.cpp
+  Components/               库组件（每个目录一份 add_component，PascalCase）
+    Core/                   基础模块：Core::appName() / Core::version()
+    Logger/                 日志组件（占位）：Logger::info()，依赖 Core::Core
 scripts/                    引导、构建、清理、缓存统计脚本
 .cpmcache/                  CPM 依赖缓存（不提交）
 ```
